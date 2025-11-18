@@ -36,3 +36,14 @@ it('Get Legenda Eventi', function () {
     $eventi = BrtTracking::getLegendaEventi();
     dump($eventi);
 })->wip();
+
+it('example', function () {
+
+    $client = new \SmartDato\BrtTracking\BrtTrackingClient(
+        [
+            'clientId' => '1234567890',
+        ]
+    );
+    $eventi = $client->getLegendaEsiti();
+    dump($eventi);
+})->wip();

@@ -3,7 +3,6 @@
 namespace SmartDato\BrtTracking;
 
 use Illuminate\Support\Facades\RateLimiter;
-use Psr\Log\LoggerInterface;
 use SmartDato\BrtTracking\DTO\ShipmentData;
 use SmartDato\BrtTracking\Exceptions\BrtException;
 use SmartDato\BrtTracking\Support\WsdlCache;
@@ -11,11 +10,43 @@ use SoapClient;
 
 class BrtTrackingClient
 {
+    protected array $config;
+
     public function __construct(
-        protected array $config,
-        protected LoggerInterface $logger,
+        array $config = [],
         protected ?WsdlCache $wsdlCache = null
-    ) {}
+    ) {
+        // Load default configuration from the published config file if available
+        $defaultConfig = function_exists('config') ? config('brt-tracking', []) : [];
+
+        // Merge provided config with defaults, giving priority to provided values
+        $this->config = array_replace_recursive($defaultConfig, $config);
+    }
+
+    /**
+     * Set configuration values, merging with existing config.
+     *
+     * This method allows you to update specific configuration values without
+     * replacing the entire configuration array. New values are recursively
+     * merged with existing configuration.
+     *
+     * @param  array  $config  The configuration values to merge.
+     * @return $this
+     */
+    public function setConfig(array $config): static
+    {
+        $this->config = array_replace_recursive($this->config, $config);
+
+        return $this;
+    }
+
+    /**
+     * Get the current configuration array.
+     */
+    public function getConfig(): array
+    {
+        return $this->config;
+    }
 
     /**
      * Create a SoapClient for the given WSDL key.

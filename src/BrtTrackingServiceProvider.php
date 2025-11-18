@@ -29,13 +29,10 @@ class BrtTrackingServiceProvider extends PackageServiceProvider
             /** @var array $config */
             $config = $app['config']->get('brt-tracking');
 
-            /** @var \Psr\Log\LoggerInterface $logger */
-            $logger = $app->make(\Psr\Log\LoggerInterface::class);
-
             // Instantiate a WsdlCache for optional local caching and patching
             $wsdlCache = new WsdlCache;
 
-            return new BrtTrackingClient($config, $logger, $wsdlCache);
+            return new BrtTrackingClient($config, $wsdlCache);
         });
     }
 }

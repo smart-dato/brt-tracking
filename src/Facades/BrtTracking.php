@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Facade;
  * @method static array getShipmentIdByParcel(string $parcelId)
  * @method static array getLegendaEsiti(?string $lang = null)
  * @method static array getLegendaEventi(?string $lang = null)
+ * @method static \SmartDato\BrtTracking\BrtTrackingClient setConfig(array $config)
+ * @method static array getConfig()
  *
  * @see \SmartDato\BrtTracking\BrtTrackingClient
  */
