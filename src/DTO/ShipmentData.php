@@ -56,7 +56,12 @@ class ShipmentData extends Data
         $ass = $bolla->ASSICURAZIONE ?? new \stdClass;
 
         $events = [];
-        foreach ((array) ($bolla->LISTA_EVENTI ?? []) as $e) {
+        foreach ((array) ($r->LISTA_EVENTI ?? []) as $item) {
+            $e = $item->EVENTO ?? $item;
+            // Skip empty events
+            if (empty($e->ID) && empty($e->DESCRIZIONE)) {
+                continue;
+            }
             $events[] = new EventData(
                 $e->ID ?? null,
                 $e->FILIALE ?? null,
@@ -67,7 +72,12 @@ class ShipmentData extends Data
         }
 
         $notes = [];
-        foreach ((array) ($bolla->LISTA_NOTE ?? []) as $n) {
+        foreach ((array) ($r->LISTA_NOTE ?? []) as $item) {
+            $n = $item->NOTA ?? $item;
+            // Skip empty notes
+            if (empty($n->DESCRIZIONE)) {
+                continue;
+            }
             $notes[] = new NoteData($n->DESCRIZIONE ?? null);
         }
 

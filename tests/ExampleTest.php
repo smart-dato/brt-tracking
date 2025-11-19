@@ -1,49 +1,63 @@
 <?php
 
-use SmartDato\BrtTracking\Facades\BrtTracking;
+use SmartDato\BrtTracking\BrtTrackingClient;
 
 beforeEach(function () {
-    // Ensure the client ID is set in the environment
-    config(['brt-tracking.client_id' => '1234567890']);
+    $this->brt = new BrtTrackingClient(
+        ['client_id' => '0000000']
+    );
 });
 
 it('tracking by shipment id', function ($shipmentId) {
-    $events = BrtTracking::trackingByShipmentId($shipmentId, 2025, 'en');
-    dump($events);
-})->with(['12345678901234567890'])->wip();
+    try {
+        $events = $this->brt->trackingByShipmentId($shipmentId, now()->year, 'en');
+    } catch (SoapFault $e) {
+        $this->fail($e->getMessage());
+    }
+    expect(true)->toBeTrue();
+})->with(['00000000000'])->wip();
 
 it('Get ShipmentId by RMN', function ($reference) {
-    $shipmentId = BrtTracking::getShipmentIdByRMN($reference);
-    dump($shipmentId);
-})->with(['12345678901234567890'])->wip();
+    try {
+        $shipmentId = $this->brt->getShipmentIdByRMN($reference);
+    } catch (SoapFault $e) {
+        $this->fail($e->getMessage());
+    }
+    expect(true)->toBeTrue();
+})->with(['123456789'])->wip();
 
 it('Get ShipmentId by RMA', function ($reference) {
-    $shipmentId = BrtTracking::getShipmentIdByRMA($reference);
-    dump($shipmentId);
-})->with(['12345678901234567890'])->wip();
+    try {
+        $shipment = $this->brt->getShipmentIdByRMA($reference);
+    } catch (SoapFault $e) {
+        $this->fail($e->getMessage());
+    }
+    expect($shipment->id)->toBe('00000000000');
+})->with(['OLP000000000000']);
 
 it('Get ShipmentId by Parcel', function ($parcelId) {
-    $shipmentId = BrtTracking::getShipmentIdByParcel($parcelId);
-    dump($shipmentId);
-})->with(['12345678901234567890'])->wip();
+    try {
+        $shipment = $this->brt->getShipmentIdByParcel($parcelId);
+    } catch (SoapFault $e) {
+        $this->fail($e->getMessage());
+    }
+    expect($shipment->id)->toBe('00000000000');
+})->with(['CC000000000000']);
 
 it('Get Legenda Esiti', function () {
-    $esiti = BrtTracking::getLegendaEsiti();
-    dump($esiti);
-})->wip();
+    try {
+        $esiti = $this->brt->getLegendaEsiti();
+    } catch (SoapFault $e) {
+        $this->fail($e->getMessage());
+    }
+    expect(true)->toBeTrue();
+});
 
 it('Get Legenda Eventi', function () {
-    $eventi = BrtTracking::getLegendaEventi();
-    dump($eventi);
-})->wip();
-
-it('example', function () {
-
-    $client = new \SmartDato\BrtTracking\BrtTrackingClient(
-        [
-            'clientId' => '1234567890',
-        ]
-    );
-    $eventi = $client->getLegendaEsiti();
-    dump($eventi);
-})->wip();
+    try {
+        $eventi = $this->brt->getLegendaEventi();
+    } catch (SoapFault $e) {
+        $this->fail($e->getMessage());
+    }
+    expect(true)->toBeTrue();
+});

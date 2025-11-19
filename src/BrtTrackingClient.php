@@ -4,6 +4,7 @@ namespace SmartDato\BrtTracking;
 
 use Illuminate\Support\Facades\RateLimiter;
 use SmartDato\BrtTracking\DTO\ShipmentData;
+use SmartDato\BrtTracking\DTO\ShipmentIdData;
 use SmartDato\BrtTracking\Exceptions\BrtException;
 use SmartDato\BrtTracking\Support\WsdlCache;
 use SoapClient;
@@ -135,11 +136,11 @@ class BrtTrackingClient
      * Find a BRT shipment id by the sender's numeric reference (RMN).
      *
      * @param  int|string  $reference  The sender reference.
-     * @return string The BRT shipment id.
+     * @return ShipmentIdData The BRT shipment id data.
      *
      * @throws \SoapFault
      */
-    public function getShipmentIdByRMN(int|string $reference): string
+    public function getShipmentIdByRMN(int|string $reference): ShipmentIdData
     {
         $this->throttle();
         $client = $this->soap('id_by_rmn');
@@ -152,18 +153,18 @@ class BrtTrackingClient
         $res = $client->__soapCall('GetIdSpedizioneByRMN', [$payload]);
         $this->assertEsito($res->return->ESITO ?? null);
 
-        return (string) $res->return->SPEDIZIONE_ID;
+        return ShipmentIdData::fromSoap($res->return);
     }
 
     /**
      * Find a BRT shipment id by the sender's alphanumeric reference (RMA).
      *
      * @param  string  $reference  The sender reference.
-     * @return string The BRT shipment id.
+     * @return ShipmentIdData The BRT shipment id data.
      *
      * @throws \SoapFault
      */
-    public function getShipmentIdByRMA(string $reference): string
+    public function getShipmentIdByRMA(string $reference): ShipmentIdData
     {
         $this->throttle();
         $client = $this->soap('id_by_rma');
@@ -176,18 +177,18 @@ class BrtTrackingClient
         $res = $client->__soapCall('GetIdSpedizioneByRMA', [$payload]);
         $this->assertEsito($res->return->ESITO ?? null);
 
-        return (string) $res->return->SPEDIZIONE_ID;
+        return ShipmentIdData::fromSoap($res->return);
     }
 
     /**
      * Find a BRT shipment id and year by parcel identifier.
      *
      * @param  string  $parcelId  The parcel identifier.
-     * @return array{year:int,id:string}
+     * @return ShipmentIdData The BRT shipment id data.
      *
      * @throws \SoapFault
      */
-    public function getShipmentIdByParcel(string $parcelId): array
+    public function getShipmentIdByParcel(string $parcelId): ShipmentIdData
     {
         $this->throttle();
         $client = $this->soap('id_by_collo');
@@ -200,10 +201,7 @@ class BrtTrackingClient
         $res = $client->__soapCall('GetIdSpedizioneByIdCollo', [$payload]);
         $this->assertEsito($res->return->ESITO ?? null);
 
-        return [
-            'year' => (int) ($res->SPEDIZIONE_ANNO ?? 0),
-            'id' => (string) $res->SPEDIZIONE_ID,
-        ];
+        return ShipmentIdData::fromSoap($res->return);
     }
 
     /**
