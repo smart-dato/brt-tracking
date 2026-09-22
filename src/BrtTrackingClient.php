@@ -13,6 +13,23 @@ class BrtTrackingClient
 {
     protected array $config;
 
+    /**
+     * A factory used in place of building a real SoapClient, so the test suite
+     * can replay canned responses instead of calling BRT. Pass null to restore
+     * normal behaviour.
+     *
+     * @var (callable(string, array<string, mixed>): SoapClient)|null
+     */
+    private static $soapClientFactory = null;
+
+    /**
+     * @param  (callable(string, array<string, mixed>): SoapClient)|null  $factory
+     */
+    public static function useSoapClientFactory(?callable $factory): void
+    {
+        self::$soapClientFactory = $factory;
+    }
+
     public function __construct(
         array $config = [],
         protected ?WsdlCache $wsdlCache = null
@@ -59,6 +76,10 @@ class BrtTrackingClient
      */
     protected function soap(string $wsdlKey): SoapClient
     {
+        if (self::$soapClientFactory !== null) {
+            return (self::$soapClientFactory)($wsdlKey, $this->config);
+        }
+
         $wsdlUrl = $this->config['wsdl'][$wsdlKey] ?? throw new \RuntimeException("Unknown WSDL key {$wsdlKey}");
         if (($this->config['cache_wsdl_locally'] ?? false) && $this->wsdlCache) {
             $wsdlUrl = $this->wsdlCache->getPatched($wsdlUrl);

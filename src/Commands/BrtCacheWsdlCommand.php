@@ -3,6 +3,7 @@
 namespace SmartDato\BrtTracking\Commands;
 
 use Illuminate\Console\Command;
+use SmartDato\BrtTracking\Support\WsdlCache;
 
 class BrtCacheWsdlCommand extends Command
 {

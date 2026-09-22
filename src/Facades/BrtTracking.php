@@ -3,6 +3,7 @@
 namespace SmartDato\BrtTracking\Facades;
 
 use Illuminate\Support\Facades\Facade;
+use SmartDato\BrtTracking\BrtTrackingClient;
 
 /**
  * @method static \SmartDato\BrtTracking\DTO\ShipmentData trackingByShipmentId(string $shipmentId, ?int $year = null, ?string $lang = null)
@@ -14,12 +15,12 @@ use Illuminate\Support\Facades\Facade;
  * @method static \SmartDato\BrtTracking\BrtTrackingClient setConfig(array $config)
  * @method static array getConfig()
  *
- * @see \SmartDato\BrtTracking\BrtTrackingClient
+ * @see BrtTrackingClient
  */
 class BrtTracking extends Facade
 {
     protected static function getFacadeAccessor(): string
     {
-        return \SmartDato\BrtTracking\BrtTrackingClient::class;
+        return BrtTrackingClient::class;
     }
 }
