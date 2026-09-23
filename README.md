@@ -2,7 +2,7 @@
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/smart-dato/brt-tracking.svg?style=flat-square)](https://packagist.org/packages/smart-dato/brt-tracking)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/smart-dato/brt-tracking/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/smart-dato/brt-tracking/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/smart-dato/brt-tracking/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/smart-dato/brt-tracking/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
+[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/smart-dato/brt-tracking/code-style.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/smart-dato/brt-tracking/actions?query=workflow%3A%22Code+style%22+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/smart-dato/brt-tracking.svg?style=flat-square)](https://packagist.org/packages/smart-dato/brt-tracking)
 
 This package provides a Laravel-friendly wrapper around the BRT VAS100 tracking SOAP
@@ -25,13 +25,15 @@ You can publish the config file with:
 php artisan vendor:publish --tag="brt-tracking-config"
 ```
 
-This is the contents of the published config file:
-
-```php
-return [
-];
-
+```dotenv
+BRT_CLIENT_ID=your-client-id
+BRT_LANG=en
+BRT_THROTTLE_PER_MINUTE=250
+BRT_LOG_CHANNEL=
 ```
+
+The config also holds the WSDL and endpoint URLs (production by default), timeout and retry values, and the local WSDL cache settings.
+
 Optionally you may cache the WSDL files to fix the http/https mismatch:
 
 ```bash
@@ -68,10 +70,6 @@ composer test
 ## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
-
-## Contributing
-
-Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 ## Security Vulnerabilities
 
